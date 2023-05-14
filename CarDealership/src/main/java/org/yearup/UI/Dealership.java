@@ -1,9 +1,9 @@
 package org.yearup.UI;
 
+
 import org.yearup.Vehicle.Vehicle;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,17 +13,16 @@ public class Dealership
     private String name;
     private String address;
     private String phoneNumber;
-    private ArrayList<Vehicle>loadVehicles;
-//    private String filePath;
+    private ArrayList<Vehicle>loadVehicle;
 
-    public Dealership()
+    public Dealership(String name,String address, String phoneNumber)
     {
-        loadVehicles = new ArrayList<Vehicle>();
-//        this.filePath = filePath;
+        loadVehicle = new ArrayList<Vehicle>();
         this.name = name;
         this.address =address;
         this.phoneNumber =phoneNumber;
     }
+
     public String getName()
     {
         return name;
@@ -50,10 +49,10 @@ public class Dealership
     }
     public void getVehiclesByPrice()
     {
-        double minPrice =Double.MAX_VALUE;
-        double maxPrice = Double.MIN_VALUE;
+        double minPrice =Double.MIN_VALUE;
+        double maxPrice = Double.MAX_VALUE;
 
-        for(Vehicle vehicle : loadVehicles)
+        for(Vehicle vehicle : loadVehicle)
         {
             double price = vehicle.getPrice();
             if (price < minPrice)
@@ -77,7 +76,7 @@ public class Dealership
     }
     public Vehicle getVehicleByMake()
     {
-        for(Vehicle vehicle: loadVehicles)
+        for(Vehicle vehicle: loadVehicle)
         {
             if(vehicle.getMake().equals(getVehicleByMake()))
             {
@@ -88,7 +87,7 @@ public class Dealership
     }
     public Vehicle getVehicleByModel()
     {
-        for(Vehicle vehicle: loadVehicles)
+        for(Vehicle vehicle: loadVehicle)
         {
             if(vehicle.getModel().equals(getVehicleByModel()))
             {
@@ -97,30 +96,27 @@ public class Dealership
         }
         return null;
     }
-    public Vehicle getAllVehicle() throws IOException {
-        FileReader fileReader = new FileReader("Vehicle/CarLists");
-        BufferedReader reader = new BufferedReader((fileReader));
-        System.out.println("Displaying all cars:");
-        System.out.println("-------------------------");
-        String line = reader.readLine();
-        while(line != null)
-        {
-            String[] columns = line.split("\\|");
-            int vin = Integer.parseInt(columns[0]);
-            int year = Integer.parseInt(columns[1]);
-            String make = columns[2];
-            String model = columns[3];
-            String vehicleType =columns[4];
-            String color =columns[5];
-            int odometer = Integer.parseInt(columns[6]);
-            double price = Double.parseDouble(columns[7]);
-            // vehicle = new Vehicle(vin, year,make,model,vehicleType,color,odometer,price);
-        }
-
-
-        return null;
-
-    }
+//    public Vehicle getAllVehicle() throws IOException {
+//        System.out.println("Displaying all cars:");
+//        System.out.println("-------------------------");
+//        while
+//        {
+//            String[] columns = line.split("\\|");
+//            int vin = Integer.parseInt(columns[0]);
+//            int year = Integer.parseInt(columns[1]);
+//            String make = columns[2];
+//            String model = columns[3];
+//            String vehicleType =columns[4];
+//            String color =columns[5];
+//            int odometer = Integer.parseInt(columns[6]);
+//            double price = Double.parseDouble(columns[7]);
+//            // vehicle = new Vehicle(vin, year,make,model,vehicleType,color,odometer,price);
+//        }
+//
+//
+//        return null;
+//
+//    }
 
 //    public Vehicle addVehicle(vehicle);
 //    {

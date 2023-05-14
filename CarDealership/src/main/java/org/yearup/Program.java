@@ -1,14 +1,14 @@
 package org.yearup;
 
-import org.yearup.UI.Dealership;
+import org.yearup.Dealership.DealershipApp;
 
-import java.io.IOException;
 
 public class Program
 {
     public static void main(String[] args)
     {
-        Dealership dealership = new Dealership();
-        dealership.getVehiclesByPrice();
+        DealershipApp app = new DealershipApp();
+        app.run();
+
     }
 }
