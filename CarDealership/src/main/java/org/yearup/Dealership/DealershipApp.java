@@ -1,14 +1,23 @@
 package org.yearup.Dealership;
 
-import org.yearup.UI.Dealership;
 import org.yearup.Vehicle.Vehicle;
 import org.yearup.DealershipFileManager.FileManager;
 
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class DealershipApp
 {
+    private String filePath;
+
+    public DealershipApp() throws IOException {
+    }
+
+    public void FileManager(String filePath) {
+        this.filePath = filePath;
+    }
     FileManager fileManager = new FileManager("target\\loadVehicle.csv");
     ArrayList<Vehicle>loadVehicles;
     Scanner scanner = new Scanner(System.in);
@@ -38,15 +47,12 @@ public class DealershipApp
                 processGetByPriceRequest();
                 break;
             case "2":
-                processGetByMakeRequest();
+                processGetByMakeModelRequest();
                 break;
             case "3":
-                processGetByModelRequest();
+                getAllVehicles();
                 break;
             case "4":
-                processGetAllVehiclesRequest();
-                break;
-            case "5":
                 processAddVehicleRequest();
                 break;
             case "X":
@@ -88,16 +94,60 @@ public class DealershipApp
     private void getVehiclesByPrice() {
     }
 
-    public void processGetByMakeRequest() {
+    //request for vehicle make
+    public ArrayList<Vehicle> processGetByMakeModelRequest()
+    {
+        ArrayList<Vehicle>matchingVehicle = new ArrayList<>();
+        for(Vehicle Vehicle : loadVehicles)
+        {
+            String make= null;
+            String model = null;
+            if (Vehicle.getMake().equalsIgnoreCase(make) || Vehicle.getModel().equalsIgnoreCase(model))
+            {
+                matchingVehicle.add(Vehicle);
+            }
+        }return matchingVehicle;
     }
 
-    public void processGetByModelRequest() {
+    public ArrayList<Vehicle>getAllVehicles()
+    {
+        return loadVehicles;
     }
 
-    public void processGetAllVehiclesRequest() {
-    }
 
-    public void processAddVehicleRequest() {
+    public void processAddVehicleRequest()
+    {
+        try(FileReader reader = new FileReader(this.filePath);
+            Scanner scanner = new Scanner(reader)
+             {
+                 scanner.nextLine();
+                 while(scanner.hasNextLine())
+                 {
+                     String line = scanner.nextLine();
+                     String[] columns = line.split("\\|");
+                     int vin = Integer.parseInt(columns[0]);
+                     int year = Integer.parseInt(columns[1]);
+                     String make = columns[2];
+                     String model = columns[3];
+                     String color = columns[4];
+                     double price = Double.parseDouble(columns[5]);
+
+                     Vehicle vehicle = new Vehicle(vin,year,make,model,color,price);
+                     vehicle.add(vehicle);
+                 }
+
+        }
+        catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        })
+        {
+            return vehicle;
+        }
+
+
     }
 
 
