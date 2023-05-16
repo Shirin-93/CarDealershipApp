@@ -3,26 +3,24 @@ package org.yearup.UI;
 
 import org.yearup.Vehicle.Vehicle;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class Dealership
+public class UserInterface
 {
     private String name;
     private String address;
     private String phoneNumber;
     private ArrayList<Vehicle>loadVehicle;
 
-    public Dealership(String name,String address, String phoneNumber)
+    public UserInterface(String name, String address, String phoneNumber)
     {
         loadVehicle = new ArrayList<Vehicle>();
         this.name = name;
         this.address =address;
         this.phoneNumber =phoneNumber;
     }
-
+    public void run() {
+    }
     public String getName()
     {
         return name;
@@ -96,27 +94,9 @@ public class Dealership
         }
         return null;
     }
-//    public Vehicle getAllVehicle() throws IOException {
-//        System.out.println("Displaying all cars:");
-//        System.out.println("-------------------------");
-//        while
-//        {
-//            String[] columns = line.split("\\|");
-//            int vin = Integer.parseInt(columns[0]);
-//            int year = Integer.parseInt(columns[1]);
-//            String make = columns[2];
-//            String model = columns[3];
-//            String vehicleType =columns[4];
-//            String color =columns[5];
-//            int odometer = Integer.parseInt(columns[6]);
-//            double price = Double.parseDouble(columns[7]);
-//            // vehicle = new Vehicle(vin, year,make,model,vehicleType,color,odometer,price);
-//        }
+
+
 //
-//
-//        return null;
-//
-//    }
 
 //    public Vehicle addVehicle(vehicle);
 //    {

@@ -13,6 +13,7 @@ public class DealershipApp
     private String filePath;
 
     public DealershipApp() throws IOException {
+        loadVehicles = loadAllVehicles();
     }
 
     public void FileManager(String filePath) {
@@ -53,7 +54,7 @@ public class DealershipApp
                 getAllVehicles();
                 break;
             case "4":
-                processAddVehicleRequest();
+                loadAllVehicles();
                 break;
             case "X":
                 System.out.println("\nThanks for visiting our web page. See you soon");
@@ -86,9 +87,6 @@ public class DealershipApp
             case "B":
 
         }
-
-
-
     }
 
     private void getVehiclesByPrice() {
@@ -115,11 +113,13 @@ public class DealershipApp
     }
 
 
-    public void processAddVehicleRequest()
+    public ArrayList<Vehicle> loadAllVehicles()
     {
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
+
         try(FileReader reader = new FileReader(this.filePath);
-            Scanner scanner = new Scanner(reader)
-             {
+            Scanner scanner = new Scanner(reader))
+        {
                  scanner.nextLine();
                  while(scanner.hasNextLine())
                  {
@@ -129,11 +129,13 @@ public class DealershipApp
                      int year = Integer.parseInt(columns[1]);
                      String make = columns[2];
                      String model = columns[3];
-                     String color = columns[4];
-                     double price = Double.parseDouble(columns[5]);
+                     String vehicleType = columns[4];
+                     String color = columns[5];
+                     int odometer = Integer.parseInt(columns[6]);
+                     double price = Double.parseDouble(columns[7]);
 
-                     Vehicle vehicle = new Vehicle(vin,year,make,model,color,price);
-                     vehicle.add(vehicle);
+                     Vehicle vehicle = new Vehicle(vin,year,make,model,vehicleType,color,odometer,price);
+                     vehicles.add(vehicle);
                  }
 
         }
@@ -142,10 +144,10 @@ public class DealershipApp
 
         } catch (IOException e) {
             throw new RuntimeException(e);
-        })
-        {
-            return vehicle;
         }
+
+        return vehicles;
+
 
 
     }
