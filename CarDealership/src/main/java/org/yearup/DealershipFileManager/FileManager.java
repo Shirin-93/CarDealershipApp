@@ -14,8 +14,8 @@ public class FileManager {
     public FileManager(String filePath) throws FileNotFoundException, IOException {
         this.filePath = filePath;
     }
-    private static final String FileName = "loadVehicle.csv";
-//    private static final String delimeter = "\\|";
+    private static final String FileName = "loadVehicles.csv";
+//    private static final String delimiter = "\\|";
 //    {
 //        try(BufferedReader reader = new BufferedReader(new FileReader(FileName)))
 //        {
@@ -24,7 +24,7 @@ public class FileManager {
 //            UserInterface dealership = null;
 //            while((line = reader.readLine()) != null)
 //            {
-//                details = line.split(delimeter);
+//                details = line.split(delimiter);
 //                if (dealership ==null)
 //                {
 //                    dealership = new UserInterface(details[0],details[1],details[2]);

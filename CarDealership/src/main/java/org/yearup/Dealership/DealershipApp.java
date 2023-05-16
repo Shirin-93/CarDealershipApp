@@ -1,156 +1,144 @@
 package org.yearup.Dealership;
 
-import org.yearup.Vehicle.Vehicle;
-import org.yearup.DealershipFileManager.FileManager;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import org.yearup.Vehicle.Vehicle;
+
 import java.util.ArrayList;
-import java.util.Scanner;
+
 public class DealershipApp
 {
-    private String filePath;
+    private String name;
+    private String address;
+    private String phoneNumber;
+    private ArrayList<Vehicle>loadVehicles;
 
-    public DealershipApp() throws IOException {
-        loadVehicles = loadAllVehicles();
-    }
-
-    public void FileManager(String filePath) {
-        this.filePath = filePath;
-    }
-    FileManager fileManager = new FileManager("target\\loadVehicle.csv");
-    ArrayList<Vehicle>loadVehicles;
-    Scanner scanner = new Scanner(System.in);
-    public void run()
+    public DealershipApp(String name, String address, String phoneNumber)
     {
-        displayHomeScreen();
+        loadVehicles = new ArrayList<Vehicle>();
+        this.name = name;
+        this.address =address;
+        this.phoneNumber =phoneNumber;
     }
-    public void displayHomeScreen()
+    //    public void run() {
+//    }
+    public String getName()
     {
-        System.out.println("Welcome to CAR DEALERS:\n");
-        System.out.println("--------------------------------------------------\n");
-        System.out.println("Choose an option to proceed:\n");
-        System.out.println("1)Search within priceRange:\n");
-        System.out.println("2)Search by Make request:\n");
-        System.out.println("3)Search by model request:\n");
-        System.out.println("4)Show all vehicles:\n");
-        System.out.println("5)All a vehicle:\n");
-        System.out.println("X)Exit\n");
-        System.out.println("---------------------------------------------------\n");
-        System.out.println("\n Enter your choice here:");
+        return name;
+    }
+    public void setName(String name)
+    {
+        this.name= name;
+    }
 
-        String choice = scanner.nextLine().toUpperCase();
+    public String getAddress() {
+        return address;
+    }
 
-        switch(choice)
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+    public ArrayList<Vehicle> getVehiclesByPrice()
+    {
+        ArrayList<Vehicle> searchResults = new ArrayList<>();
+        double minPrice =Double.MIN_VALUE;
+        double maxPrice = Double.MAX_VALUE;
+
+        for(Vehicle vehicle : loadVehicles)
         {
-            case "1":
-                processGetByPriceRequest();
-                break;
-            case "2":
-                processGetByMakeModelRequest();
-                break;
-            case "3":
-                getAllVehicles();
-                break;
-            case "4":
-                loadAllVehicles();
-                break;
-            case "X":
-                System.out.println("\nThanks for visiting our web page. See you soon");
-                System.out.println("\nExiting......");
-                break;
-            default:
-                System.out.println("\nInvalid option, please try again");
-
-        }
-    }
-
-    public void processGetByPriceRequest()
-    {
-        ArrayList<Vehicle>loadVehicle;
-        System.out.println("Displaying according to price\n");
-        System.out.println("----------------------------------------------\n");
-        System.out.println("What do you want to do?\n");
-        System.out.println("A)Display cars in minimum price range:\n");
-        System.out.println("B)Display cars in maximum price range:\n");
-        System.out.println("0)Go back to home screen\n");
-        System.out.println("-----------------------------------------------\n");
-        System.out.println("\n Enter your option:");
-
-        String choice = scanner.nextLine().toUpperCase();
-        switch(choice)
-        {
-            case "A":
-                getVehiclesByPrice();
-                break;
-            case "B":
-
-        }
-    }
-
-    private void getVehiclesByPrice() {
-    }
-
-    //request for vehicle make
-    public ArrayList<Vehicle> processGetByMakeModelRequest()
-    {
-        ArrayList<Vehicle>matchingVehicle = new ArrayList<>();
-        for(Vehicle Vehicle : loadVehicles)
-        {
-            String make= null;
-            String model = null;
-            if (Vehicle.getMake().equalsIgnoreCase(make) || Vehicle.getModel().equalsIgnoreCase(model))
+            double price = vehicle.getPrice();
+            if (price < minPrice)
             {
-                matchingVehicle.add(Vehicle);
+                minPrice = price;
             }
-        }return matchingVehicle;
+            if(price > maxPrice)
+            {
+                maxPrice = price;
+            }
+            else
+            {
+                System.out.println("there was an error loading file");
+            }
+        }
+        System.out.println("Price ranges:");
+        System.out.println("---------------------------------------");
+        System.out.println( " Minimum price range of car:" + minPrice);
+        System.out.println(" Maximum price range of car:"+ maxPrice);
+        System.out.println("----------------------------------------");
+        return searchResults;
     }
-
-    public ArrayList<Vehicle>getAllVehicles()
+    public ArrayList<Vehicle> getVehicleByMake()
     {
-        return loadVehicles;
-    }
-
-
-    public ArrayList<Vehicle> loadAllVehicles()
-    {
-        ArrayList<Vehicle> vehicles = new ArrayList<>();
-
-        try(FileReader reader = new FileReader(this.filePath);
-            Scanner scanner = new Scanner(reader))
+        ArrayList<Vehicle>searchResults = new ArrayList<>();
+        for(Vehicle vehicle: loadVehicles)
         {
-                 scanner.nextLine();
-                 while(scanner.hasNextLine())
-                 {
-                     String line = scanner.nextLine();
-                     String[] columns = line.split("\\|");
-                     int vin = Integer.parseInt(columns[0]);
-                     int year = Integer.parseInt(columns[1]);
-                     String make = columns[2];
-                     String model = columns[3];
-                     String vehicleType = columns[4];
-                     String color = columns[5];
-                     int odometer = Integer.parseInt(columns[6]);
-                     double price = Double.parseDouble(columns[7]);
-
-                     Vehicle vehicle = new Vehicle(vin,year,make,model,vehicleType,color,odometer,price);
-                     vehicles.add(vehicle);
-                 }
-
+            if(vehicle.getMake().equals(getVehicleByMake()))
+            {
+                return searchResults;
+            }
         }
-        catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return vehicles;
-
-
-
+        return searchResults;
     }
+    public ArrayList<Vehicle> getVehicleByModel()
+    {
+        ArrayList<Vehicle> searchResults = new ArrayList<>();
+        for(Vehicle vehicle: loadVehicles)
+        {
+            if(vehicle.getModel().equals(getVehicleByModel()))
+            {
+                return searchResults;
+            }
+        }
+        return searchResults;
+    }
+
+
+//
+
+//    public Vehicle addVehicle(vehicle);
+//    {
+//        return null;
+//    }
+
+
+
+
+
+//    public Vehicle getVehicleByYear()
+//    {
+//        return null;
+//    }
+//    public Vehicle getVehicleByColor()
+//    {
+//        return null;
+//    }
+//    public Vehicle getVehiclesByMileage()
+//    {
+//        return null;
+//    }
+//    public Vehicle getVehiclesByType()
+//    {
+//        return null;
+//    }
+
+//
+//    public Vehicle removeVehicle()
+//    {
+//
+//    }
+
+
+
+
+
+
 
 
 }

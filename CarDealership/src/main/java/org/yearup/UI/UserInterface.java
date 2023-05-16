@@ -1,140 +1,166 @@
 package org.yearup.UI;
 
-
 import org.yearup.Vehicle.Vehicle;
+import org.yearup.DealershipFileManager.FileManager;
+import org.yearup.Dealership.DealershipApp;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.Scanner;
 public class UserInterface
 {
-    private String name;
-    private String address;
-    private String phoneNumber;
-    private ArrayList<Vehicle>loadVehicle;
+    private String filePath;
 
-    public UserInterface(String name, String address, String phoneNumber)
+    public UserInterface() throws IOException {
+        loadVehicles = loadAllVehicles();
+    }
+
+    public void FileManager(String filePath) {
+        this.filePath = filePath;
+    }
+    FileManager fileManager = new FileManager("target\\loadVehicle.csv");
+    ArrayList<Vehicle>loadVehicles;
+    Scanner scanner = new Scanner(System.in);
+    public void run()
     {
-        loadVehicle = new ArrayList<Vehicle>();
-        this.name = name;
-        this.address =address;
-        this.phoneNumber =phoneNumber;
+        displayHomeScreen();
     }
-    public void run() {
-    }
-    public String getName()
+    public void displayHomeScreen()
     {
-        return name;
-    }
-    public void setName(String name)
-    {
-        this.name= name;
-    }
+        System.out.println("Welcome to CAR DEALERS:\n");
+        System.out.println("--------------------------------------------------\n");
+        System.out.println("Choose an option to proceed:\n");
+        System.out.println("1)Search within priceRange:\n");
+        System.out.println("2)Search by Make request:\n");
+        System.out.println("3)Search by model request:\n");
+        System.out.println("4)Show all vehicles:\n");
+        System.out.println("5)All a vehicle:\n");
+        System.out.println("X)Exit\n");
+        System.out.println("---------------------------------------------------\n");
+        System.out.println("\n Enter your choice here:");
 
-    public String getAddress() {
-        return address;
-    }
+        String choice = scanner.nextLine().toUpperCase();
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-    public void getVehiclesByPrice()
-    {
-        double minPrice =Double.MIN_VALUE;
-        double maxPrice = Double.MAX_VALUE;
-
-        for(Vehicle vehicle : loadVehicle)
+        switch(choice)
         {
-            double price = vehicle.getPrice();
-            if (price < minPrice)
+            case "1":
+                processGetByPriceRequest();
+                break;
+            case "2":
+                processGetByMakeModelRequest();
+                break;
+            case "3":
+                getAllVehicles();
+                break;
+            case "4":
+                loadAllVehicles();
+                break;
+            case "X":
+                System.out.println("\nThanks for visiting our web page. See you soon");
+                System.out.println("\nExiting......");
+                break;
+            default:
+                System.out.println("\nInvalid option, please try again");
+
+        }
+    }
+
+    public void processGetByPriceRequest()
+    {
+        ArrayList<Vehicle>loadVehicle;
+        System.out.println("Displaying according to price\n");
+        System.out.println("----------------------------------------------\n");
+        System.out.println("What do you want to do?\n");
+        System.out.println("A)Display cars in minimum price range:\n");
+        System.out.println("B)Display cars in maximum price range:\n");
+        System.out.println("0)Go back to home screen\n");
+        System.out.println("-----------------------------------------------\n");
+        System.out.println("\n Enter your option:");
+
+    }
+
+    public ArrayList<Vehicle> getVehiclesByPrice()
+    {
+        ArrayList<Vehicle>matchingPrice = new ArrayList<>();
+        System.out.println("Enter the minimum price range:\n");
+        double minPrice = scanner.nextDouble();
+        System.out.println("Enter the maximum price range: \n");
+        double maxPrice = scanner.nextDouble();
+
+        for(Vehicle vehicle :loadVehicles)
+        {
+            if(vehicle.getPrice() >= minPrice || vehicle.getPrice() <= maxPrice)
             {
-                minPrice = price;
-            }
-            if(price > maxPrice)
-            {
-                maxPrice = price;
-            }
-            else
-            {
-                System.out.println("there was an error loading file");
+                System.out.println(vehicle.getMake() + " " + vehicle.getModel()
+                + " "+ vehicle.getYear()+ " " + vehicle.getPrice());
             }
         }
-        System.out.println("Price ranges:");
-        System.out.println("---------------------------------------");
-        System.out.println( " Minimum price range of car:" + minPrice);
-        System.out.println(" Maximum price range of car:"+ maxPrice);
-        System.out.println("----------------------------------------");
+        return matchingPrice;
     }
-    public Vehicle getVehicleByMake()
+
+    //request for vehicle make
+    public ArrayList<Vehicle> processGetByMakeModelRequest()
     {
-        for(Vehicle vehicle: loadVehicle)
+        ArrayList<Vehicle>matchingVehicle = new ArrayList<>();
+        for(Vehicle Vehicle : loadVehicles)
         {
-            if(vehicle.getMake().equals(getVehicleByMake()))
-            {
-                return vehicle;
-            }
-        }
-        return null;
+
+//            String make= null;
+//            String model = null;
+//            if (Vehicle.getMake().equalsIgnoreCase(make) || Vehicle.getModel().equalsIgnoreCase(model))
+//            {
+//                matchingVehicle.add(Vehicle);
+//            }
+        }return matchingVehicle;
     }
-    public Vehicle getVehicleByModel()
+
+    public ArrayList<Vehicle>getAllVehicles()
     {
-        for(Vehicle vehicle: loadVehicle)
-        {
-            if(vehicle.getModel().equals(getVehicleByModel()))
-            {
-                return vehicle;
-            }
-        }
-        return null;
+        return loadVehicles;
     }
 
 
-//
+    public ArrayList<Vehicle> loadAllVehicles()
+    {
+        ArrayList<Vehicle> vehicles = new ArrayList<>();
 
-//    public Vehicle addVehicle(vehicle);
-//    {
-//        return null;
-//    }
+        try(FileWriter writer = new FileWriter(this.filePath);
+            Scanner scanner = new Scanner (String.valueOf(writer)))
+        {
+            scanner.nextLine();
+            while(scanner.hasNextLine())
+            {
+                String line = scanner.nextLine();
+                String[] columns = line.split("\\|");
+                int vin = Integer.parseInt(columns[0]);
+                int year = Integer.parseInt(columns[1]);
+                String make = columns[2];
+                String model = columns[3];
+                String vehicleType = columns[4];
+                String color = columns[5];
+                int odometer = Integer.parseInt(columns[6]);
+                double price = Double.parseDouble(columns[7]);
 
+                Vehicle vehicle = new Vehicle(vin,year,make,model,vehicleType,color,odometer,price);
+                vehicles.add(vehicle);
+            }
 
+        }
+        catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
 
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-
-//    public Vehicle getVehicleByYear()
-//    {
-//        return null;
-//    }
-//    public Vehicle getVehicleByColor()
-//    {
-//        return null;
-//    }
-//    public Vehicle getVehiclesByMileage()
-//    {
-//        return null;
-//    }
-//    public Vehicle getVehiclesByType()
-//    {
-//        return null;
-//    }
-
-//
-//    public Vehicle removeVehicle()
-//    {
-//
-//    }
-
-
-
+        return vehicles;
 
 
 
+    }
 
 
 }
