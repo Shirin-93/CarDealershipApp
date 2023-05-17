@@ -4,10 +4,7 @@ import org.yearup.Vehicle.Vehicle;
 import org.yearup.DealershipFileManager.FileManager;
 import org.yearup.Dealership.DealershipApp;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 public class UserInterface
@@ -36,8 +33,7 @@ public class UserInterface
         System.out.println("1)Search within priceRange:\n");
         System.out.println("2)Search by Make request:\n");
         System.out.println("3)Search by model request:\n");
-        System.out.println("4)Show all vehicles:\n");
-        System.out.println("5)All a vehicle:\n");
+        System.out.println("4)All vehicle:\n");
         System.out.println("X)Exit\n");
         System.out.println("---------------------------------------------------\n");
         System.out.println("\n Enter your choice here:");
@@ -53,7 +49,7 @@ public class UserInterface
                 processGetByMakeModelRequest();
                 break;
             case "3":
-                getAllVehicles();
+                 getVehicleByModel();
                 break;
             case "4":
                 loadAllVehicles();
@@ -70,7 +66,7 @@ public class UserInterface
 
     public void processGetByPriceRequest()
     {
-        ArrayList<Vehicle>loadVehicle;
+        ArrayList<Vehicle>loadVehicles;
         System.out.println("Displaying according to price\n");
         System.out.println("----------------------------------------------\n");
         System.out.println("What do you want to do?\n");
@@ -79,7 +75,21 @@ public class UserInterface
         System.out.println("0)Go back to home screen\n");
         System.out.println("-----------------------------------------------\n");
         System.out.println("\n Enter your option:");
+        String choice = scanner.nextLine();
+        if(choice.equals("A"))
+        {
+            ArrayList<Vehicle>matchingPrice = getVehiclesByPrice();
+        } else if (choice.equals("B"))
+        {
 
+        } else if (choice.equals("0"))
+        {
+            displayHomeScreen();
+        }
+        else {
+            System.out.println("Invalid Option. please try again");
+            processGetByPriceRequest();
+        }
     }
 
     public ArrayList<Vehicle> getVehiclesByPrice()
@@ -89,6 +99,8 @@ public class UserInterface
         double minPrice = scanner.nextDouble();
         System.out.println("Enter the maximum price range: \n");
         double maxPrice = scanner.nextDouble();
+        System.out.println("Your vehicle suggestions: ");
+        System.out.println("------------------------------------------");
 
         for(Vehicle vehicle :loadVehicles)
         {
@@ -99,36 +111,77 @@ public class UserInterface
             }
         }
         return matchingPrice;
+
     }
 
     //request for vehicle make
-    public ArrayList<Vehicle> processGetByMakeModelRequest()
+    public void processGetByMakeModelRequest()
     {
-        ArrayList<Vehicle>matchingVehicle = new ArrayList<>();
-        for(Vehicle Vehicle : loadVehicles)
+        ArrayList<Vehicle>loadVehicles;
+        System.out.println("Display by make model of vehicle\n");
+        System.out.println("-------------------------------------\n");
+        System.out.println("What do you want to do?\n");
+        System.out.println("A) Display the Vehicle model:\n");
+        System.out.println("B) Display the Vehicle make:\n ");
+        System.out.println("0) Go back to home screen\n");
+        System.out.println("--------------------------------------");
+        System.out.println("Enter your option here:");
+        String choice = scanner.nextLine();
+        if(choice.equals("A"))
+        {
+            ArrayList<Vehicle>searchResults = getVehicleByModel();
+        } else if (choice.equals("B"))
+        {
+         ArrayList<Vehicle>searchResults = getVehicleByMake();
+        } else if (choice.equals("0"))
+        {
+            displayHomeScreen();
+        }
+        else {
+            System.out.println("Invalid option. Please try again");
+            processGetByMakeModelRequest();
+        }
+    }
+    public ArrayList<Vehicle> getVehicleByModel()
+    {
+        ArrayList<Vehicle>searchResults = new ArrayList<>();
+        System.out.println("Enter the vehicle model here: \n");
+        scanner.nextLine();
+        for(Vehicle vehicle : loadVehicles)
         {
 
-//            String make= null;
-//            String model = null;
-//            if (Vehicle.getMake().equalsIgnoreCase(make) || Vehicle.getModel().equalsIgnoreCase(model))
-//            {
-//                matchingVehicle.add(Vehicle);
-//            }
-        }return matchingVehicle;
+            String model = null;
+            if(vehicle.getModel().equalsIgnoreCase(model))
+            {
+                System.out.println(vehicle.getMake() + " "+ vehicle.getModel()+" "
+                +vehicle.getYear()+ " "+ vehicle.getPrice());
+                searchResults.add(vehicle);
+            }
+        }return searchResults;
     }
-
-    public ArrayList<Vehicle>getAllVehicles()
+    public ArrayList<Vehicle> getVehicleByMake()
     {
-        return loadVehicles;
+        ArrayList<Vehicle>searchResults = new ArrayList<>();
+        System.out.println("Enter the Vehicle Make here: \n");
+        scanner.nextLine();
+        for(Vehicle vehicle : loadVehicles)
+        {
+            String make = null;
+            if(vehicle.getMake().equalsIgnoreCase(make))
+            {
+                System.out.println(vehicle.getMake()+ " " +vehicle.getModel()+ " "
+                +vehicle.getYear() + " "+ vehicle.getPrice());
+                searchResults.add(vehicle);
+            }
+
+        } return searchResults;
     }
-
-
     public ArrayList<Vehicle> loadAllVehicles()
     {
         ArrayList<Vehicle> vehicles = new ArrayList<>();
 
-        try(FileWriter writer = new FileWriter(this.filePath);
-            Scanner scanner = new Scanner (String.valueOf(writer)))
+        try(FileReader reader = new FileReader("target\\loadVehicles.csv");
+            Scanner scanner = new Scanner(reader))
         {
             scanner.nextLine();
             while(scanner.hasNextLine())
@@ -147,20 +200,15 @@ public class UserInterface
                 Vehicle vehicle = new Vehicle(vin,year,make,model,vehicleType,color,odometer,price);
                 vehicles.add(vehicle);
             }
-
         }
-        catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-
-        } catch (IOException e) {
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return vehicles;
-
-
-
     }
-
+//    public ArrayList AddAVehicle()
+//    {  return vehicles;
+//
+//    }
 
 }
